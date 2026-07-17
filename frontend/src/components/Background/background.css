@@ -1,0 +1,7 @@
+.background-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at top, rgba(99, 102, 241, 0.2), transparent 50%);
+  z-index: -1;
+}
