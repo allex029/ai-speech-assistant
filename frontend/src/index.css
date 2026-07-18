@@ -1,66 +1,32 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  font-family: 'Inter', sans-serif;
+  background-color: #09090B;
+  color: #F4F4F5;
 }
 
-html{
-scroll-behavior:smooth;
-height:100%;
+html {
+  scroll-behavior: smooth;
 }
 
-body{
-font-family:"Inter",sans-serif;
-transition:.35s;
-overflow:hidden;
-min-height:100vh;
-height:100%;
-}
-
-body[data-theme="dark"]{
---bg:#050816;
---card:#111827;
---text:#ffffff;
---secondary:#b7c3d4;
---primary:#4DA6FF;
---purple:#8B5CF6;
---border:rgba(255,255,255,.08);
-background:var(--bg);
-color:var(--text);
-}
-
-body[data-theme="light"]{
---bg:#eef3fb;
---card:#ffffff;
---text:#121212;
---secondary:#555;
---primary:#2F80ED;
---purple:#7A5AF8;
---border:#ddd;
-background:var(--bg);
-color:var(--text);
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #09090B;
+  color: #F4F4F5;
+  overflow-x: hidden;
 }
 
 #root {
-min-height:100vh;
-height:100%;
+  min-height: 100vh;
 }
 
-a{
-text-decoration:none;
-color:inherit;
-}
-
-button{
-font-family:inherit;
-cursor:pointer;
-border:none;
-outline:none;
-}
-
-img{
-max-width:100%;
-display:block;
+* {
+  box-sizing: border-box;
 }

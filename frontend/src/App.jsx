@@ -1,20 +1,16 @@
-import React from "react";
-import "./styles/app.css";
-
-import Background from "./components/Background/Background";
-import Hero from "./components/Hero/Hero";
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Landing from './pages/Landing';
+import Practice from './pages/Practice';
 
 function App() {
   return (
-    <div className="app">
-      <Background />
-
-      <div className="page-shell">
-        <main className="main-container">
-          <Hero />
-        </main>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/practice" element={<Practice />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
