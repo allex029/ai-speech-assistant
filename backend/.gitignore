@@ -13,4 +13,3 @@ build/
 .coverage
 htmlcov/
 .DS_Store
-.env.example
