@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.router import api_router
 from app.core.config import settings
-from app.database.database import close_db
+from app.database.database import close_db, connect_db
 from app.middleware.exception_handler import register_exception_handlers
 from app.middleware.logging import RequestLoggingMiddleware
 from app.services.groq_service import get_groq_service
@@ -25,6 +25,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         settings.app_version,
         settings.environment,
     )
+    await connect_db()
     yield
     await get_groq_service().close()
     await close_db()

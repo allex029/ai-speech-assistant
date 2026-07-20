@@ -1,10 +1,10 @@
 """Chat / coaching conversation routes."""
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.core.constants import ConversationRole
-from app.database.database import get_db
+from app.database.database import get_database
 from app.schemas.chat import ChatRequest, ChatResponse
 from app.services.llama_service import LlamaService, get_llama_service
 from app.services.session_service import SessionService
@@ -16,7 +16,7 @@ router = APIRouter(tags=["chat"])
 async def chat(
     payload: ChatRequest,
     llama: LlamaService = Depends(get_llama_service),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncIOMotorDatabase = Depends(get_database),
 ) -> ChatResponse:
     """
     Generate an AI coaching response from a speech transcript.

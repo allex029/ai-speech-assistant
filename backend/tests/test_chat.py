@@ -22,13 +22,12 @@ def test_chat_endpoint_with_mock():
     app.dependency_overrides[get_llama_service] = lambda: _FakeLlama()
     client = TestClient(app)
 
-    # Override DB so we don't need Postgres for this unit-ish test
     async def _no_db():
         yield AsyncMock()
 
-    from app.database.database import get_db
+    from app.database.database import get_database
 
-    app.dependency_overrides[get_db] = _no_db
+    app.dependency_overrides[get_database] = _no_db
 
     try:
         response = client.post("/api/chat", json={"transcript": "Hello coach"})
@@ -41,6 +40,15 @@ def test_chat_endpoint_with_mock():
 
 
 def test_chat_rejects_empty_transcript():
+    async def _no_db():
+        yield AsyncMock()
+
+    from app.database.database import get_database
+
+    app.dependency_overrides[get_database] = _no_db
     client = TestClient(app)
-    response = client.post("/api/chat", json={"transcript": ""})
-    assert response.status_code == 422
+    try:
+        response = client.post("/api/chat", json={"transcript": ""})
+        assert response.status_code == 422
+    finally:
+        app.dependency_overrides.clear()

@@ -34,12 +34,12 @@ class Settings(BaseSettings):
         alias="CORS_ORIGINS",
     )
 
-    # Database
-    database_url: str = Field(
-        default="postgresql+asyncpg://postgres:postgres@localhost:5432/speakflow",
-        alias="DATABASE_URL",
+    # MongoDB
+    mongodb_url: str = Field(
+        default="mongodb://localhost:27017",
+        alias="MONGODB_URL",
     )
-    database_echo: bool = Field(default=False, alias="DATABASE_ECHO")
+    mongodb_db_name: str = Field(default="speakflow", alias="MONGODB_DB_NAME")
 
     # Groq / AI models
     groq_api_key: str = Field(default="", alias="GROQ_API_KEY")
@@ -92,15 +92,6 @@ class Settings(BaseSettings):
     @property
     def max_audio_size_bytes(self) -> int:
         return self.max_audio_size_mb * 1024 * 1024
-
-    @property
-    def sync_database_url(self) -> str:
-        """Sync URL for Alembic migrations (asyncpg → psycopg2)."""
-        return self.database_url.replace(
-            "postgresql+asyncpg://",
-            "postgresql+psycopg2://",
-        )
-
 
 @lru_cache
 def get_settings() -> Settings:

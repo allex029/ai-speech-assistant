@@ -3,9 +3,9 @@
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, UploadFile
-from sqlalchemy.ext.asyncio import AsyncSession
+from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from app.database.database import get_db
+from app.database.database import get_database
 from app.schemas.speech import TranscribeResponse
 from app.services.session_service import SessionService
 from app.services.whisper_service import WhisperService, get_whisper_service
@@ -20,7 +20,7 @@ async def transcribe_audio(
     session_id: Optional[str] = Form(default=None),
     language: Optional[str] = Form(default="en"),
     whisper: WhisperService = Depends(get_whisper_service),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncIOMotorDatabase = Depends(get_database),
 ) -> TranscribeResponse:
     """
     Transcribe an audio upload via Groq Whisper Large V3 Turbo.

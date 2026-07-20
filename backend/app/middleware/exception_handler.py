@@ -3,7 +3,7 @@
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import SQLAlchemyError
+from pymongo.errors import PyMongoError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.services.groq_service import GroqAPIError
@@ -67,10 +67,10 @@ def register_exception_handlers(app: FastAPI) -> None:
             },
         )
 
-    @app.exception_handler(SQLAlchemyError)
+    @app.exception_handler(PyMongoError)
     async def database_error_handler(
         request: Request,
-        exc: SQLAlchemyError,
+        exc: PyMongoError,
     ) -> JSONResponse:
         logger.exception("Database error: %s", exc)
         return JSONResponse(

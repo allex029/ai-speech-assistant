@@ -1,55 +1,32 @@
-"""Async SQLAlchemy engine and session management."""
+"""Async MongoDB connection management via Motor."""
 
 from collections.abc import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
-from sqlalchemy.orm import DeclarativeBase
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 from app.core.config import settings
 
-
-class Base(DeclarativeBase):
-    """Base class for all SQLAlchemy models."""
-
-
-engine = create_async_engine(
-    settings.database_url,
-    echo=settings.database_echo,
-    pool_pre_ping=True,
-    pool_size=10,
-    max_overflow=20,
-)
-
-AsyncSessionLocal = async_sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-    autoflush=False,
-    autocommit=False,
-)
+client: AsyncIOMotorClient | None = None
+db: AsyncIOMotorDatabase | None = None
 
 
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    """FastAPI dependency that yields an async database session."""
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-            await session.commit()
-        except Exception:
-            await session.rollback()
-            raise
+async def get_database() -> AsyncGenerator[AsyncIOMotorDatabase, None]:
+    """FastAPI dependency that yields the Motor database instance."""
+    if db is None:
+        raise RuntimeError("MongoDB is not connected. Call connect_db() first.")
+    yield db
 
 
-async def init_db() -> None:
-    """Create tables (development convenience; prefer Alembic in production)."""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+async def connect_db() -> None:
+    """Create the Motor client and select the database."""
+    global client, db
+    client = AsyncIOMotorClient(settings.mongodb_url)
+    db = client[settings.mongodb_db_name]
 
 
 async def close_db() -> None:
-    """Dispose of the engine connection pool."""
-    await engine.dispose()
+    """Close the Motor client connection."""
+    global client
+    if client is not None:
+        client.close()
+        client = None

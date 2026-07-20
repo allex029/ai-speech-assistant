@@ -1,9 +1,9 @@
 """Fluency analysis routes."""
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from app.database.database import get_db
+from app.database.database import get_database
 from app.schemas.session import FluencyAnalyzeRequest, FluencyAnalyzeResponse
 from app.services.fluency_service import FluencyService, get_fluency_service
 from app.services.session_service import SessionService
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/fluency", tags=["fluency"])
 async def analyze_fluency(
     payload: FluencyAnalyzeRequest,
     fluency: FluencyService = Depends(get_fluency_service),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncIOMotorDatabase = Depends(get_database),
 ) -> FluencyAnalyzeResponse:
     """
     Analyze speaking fluency from transcript + word timestamps.
